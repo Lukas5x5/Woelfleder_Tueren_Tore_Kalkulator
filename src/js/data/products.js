@@ -59,7 +59,7 @@ export const productsByCategory = {
         ],
         accessories: [
             { id: 7, name: "Versenkter Muschelgriff", price: 39, unit: "Stück" },
-            { id: 8, name: "Feststehendes Fenster ohne Glas", price: 55, unit: "m²" },
+            { id: 8, name: "Feststehendes Fenster ohne Glas", price: 55, unit: "Stück" },
             { id: 9, name: "Schiebefenster ohne Glas", price: 128, unit: "Stück" },
             { id: 10, name: "Feststehende Oberlichte ohne Glas", price: 147, unit: "m²" },
             { id: 11, name: "Feststehende Oberlichte mit Kippfenster ohne Glas", price: 189, unit: "m²" }
@@ -88,9 +88,9 @@ export const productsByCategory = {
             { id: 22, name: "zusätzl. Exzenter-Feststellriegel", price: 19, unit: "Stück" },
             { id: 29, name: "Aufpreis zum Flügeltor je Faltung", price: 182, unit: "Stück" },
             { id: 30, name: "Führungsschiene mit Rollen und Halterung", price: 47, unit: "lm" },
-            { id: 31, name: "Feststehendes Fenster ohne Glas", price: 76, unit: "m²" },
-            { id: 32, name: "Schiebefenster ohne Glas", price: 147, unit: "m²" },
-            { id: 33, name: "Schiebefenster zweiteilig ohne Glas", price: 264, unit: "m²" }
+            { id: 31, name: "Feststehendes Fenster ohne Glas", price: 76, unit: "Stück" },
+            { id: 32, name: "Schiebefenster ohne Glas", price: 147, unit: "Stück" },
+            { id: 33, name: "Schiebefenster zweiteilig ohne Glas", price: 264, unit: "Stück" }
         ]
     },
     'Schubtore': {
@@ -106,10 +106,10 @@ export const productsByCategory = {
         accessories: [
             { id: 40, name: "Minderpreis einwandige Füllung", price: -13, unit: "m²" },
             { id: 41, name: "ohne Füllung", price: -37, unit: "m²" },
-            { id: 42, name: "Teilung über 2,5m", price: 182, unit: "m²" },
-            { id: 44, name: "feststehendes Fenster ohne Glas", price: 56, unit: "m²" },
-            { id: 45, name: "Schiebefenster innen (nur bei einwandiger Füllung)", price: 139, unit: "m²" },
-            { id: 46, name: "Schiebefenster aussen", price: 165, unit: "m²" },
+            { id: 42, name: "Teilung über 2,5m", price: 182, unit: "Stück" },
+            { id: 44, name: "feststehendes Fenster ohne Glas", price: 56, unit: "Stück" },
+            { id: 45, name: "Schiebefenster innen (nur bei einwandiger Füllung)", price: 139, unit: "Stück" },
+            { id: 46, name: "Schiebefenster aussen", price: 165, unit: "Stück" },
             { id: 47, name: "Gehtür eingebaut", price: 320, unit: "Stück" },
             { id: 48, name: "Schubtorverschluss in Mauerleibung", price: 33, unit: "Stück" },
             { id: 49, name: "Versenkter Muschelgriff mit Niro-Klappring", price: 39, unit: "Stück" },
