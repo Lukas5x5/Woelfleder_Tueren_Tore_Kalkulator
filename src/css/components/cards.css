@@ -267,7 +267,9 @@
     }
 
     .card-title {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin-bottom: var(--spacing-md);
     }
 
     .customer-grid {
