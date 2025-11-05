@@ -68,8 +68,9 @@ export class Gate {
      * Add or update selected product
      * @param {number} productId
      * @param {number} quantity
+     * @param {string} sides - 'einseitig' or 'beidseitig' (default: 'einseitig')
      */
-    toggleProduct(productId, quantity = 1) {
+    toggleProduct(productId, quantity = 1, sides = 'einseitig') {
         const index = this.selectedProducts.findIndex(p => p.id === productId);
 
         if (index !== -1) {
@@ -77,7 +78,7 @@ export class Gate {
             this.selectedProducts.splice(index, 1);
         } else {
             // Add new product
-            this.selectedProducts.push({ id: productId, quantity });
+            this.selectedProducts.push({ id: productId, quantity, sides });
         }
 
         this.updatedAt = new Date().toISOString();
@@ -92,6 +93,19 @@ export class Gate {
         const product = this.selectedProducts.find(p => p.id === productId);
         if (product) {
             product.quantity = quantity;
+            this.updatedAt = new Date().toISOString();
+        }
+    }
+
+    /**
+     * Update product sides (einseitig/beidseitig)
+     * @param {number} productId
+     * @param {string} sides - 'einseitig' or 'beidseitig'
+     */
+    updateProductSides(productId, sides) {
+        const product = this.selectedProducts.find(p => p.id === productId);
+        if (product) {
+            product.sides = sides;
             this.updatedAt = new Date().toISOString();
         }
     }
@@ -113,6 +127,16 @@ export class Gate {
     getProductQuantity(productId) {
         const product = this.selectedProducts.find(p => p.id === productId);
         return product ? product.quantity : 0;
+    }
+
+    /**
+     * Get product sides setting
+     * @param {number} productId
+     * @returns {string}
+     */
+    getProductSides(productId) {
+        const product = this.selectedProducts.find(p => p.id === productId);
+        return product ? (product.sides || 'einseitig') : 'einseitig';
     }
 
     /**

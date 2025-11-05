@@ -163,6 +163,8 @@ function renderProductTab(gate, activeTab, categoryData) {
                 ${products.map(product => {
                     const isSelected = gate.isProductSelected(product.id);
                     const quantity = gate.getProductQuantity(product.id);
+                    const sides = gate.getProductSides(product.id);
+                    const isGeneralAccessory = activeTab === TABS.GENERAL;
 
                     return `
                         <div class="product-item ${isSelected ? 'selected' : ''}"
@@ -171,11 +173,19 @@ function renderProductTab(gate, activeTab, categoryData) {
                             <div class="product-name">${product.name}</div>
                             <div class="product-price">${formatPrice(product.price)}/${product.unit}</div>
                             ${isSelected ? `
-                                <input type="number" class="quantity-input"
-                                       value="${quantity}"
-                                       min="1" step="1"
-                                       onclick="event.stopPropagation()"
-                                       oninput="window.updateQuantity(${product.id}, this.value)">
+                                <div class="product-controls" onclick="event.stopPropagation()">
+                                    <input type="number" class="quantity-input"
+                                           value="${quantity}"
+                                           min="1" step="1"
+                                           oninput="window.updateQuantity(${product.id}, this.value)">
+                                    ${isGeneralAccessory ? `
+                                        <select class="sides-select"
+                                                onchange="window.updateSides(${product.id}, this.value)">
+                                            <option value="einseitig" ${sides === 'einseitig' ? 'selected' : ''}>Einseitig</option>
+                                            <option value="beidseitig" ${sides === 'beidseitig' ? 'selected' : ''}>Beidseitig</option>
+                                        </select>
+                                    ` : ''}
+                                </div>
                             ` : ''}
                         </div>
                     `;
@@ -332,6 +342,20 @@ window.updateQuantity = function(productId, value) {
 
     if (gate) {
         gate.updateProductQuantity(productId, quantity);
+        updateSummaryOnly();
+    }
+};
+
+/**
+ * Update product sides (einseitig/beidseitig)
+ * @param {number} productId
+ * @param {string} sides
+ */
+window.updateSides = function(productId, sides) {
+    const gate = AppState.currentGate;
+
+    if (gate) {
+        gate.updateProductSides(productId, sides);
         updateSummaryOnly();
     }
 };

@@ -68,7 +68,12 @@ class CalculationService {
             if (!product) return;
 
             let amount = 0;
-            const quantity = selected.quantity || 1;
+            let quantity = selected.quantity || 1;
+            const sides = selected.sides || 'einseitig';
+
+            // Apply sides multiplier: beidseitig doubles quantity, but NOT for Verglasung
+            const sidesMultiplier = (sides === 'beidseitig' && !this.isGlassProduct(product)) ? 2 : 1;
+            const effectiveQuantity = quantity * sidesMultiplier;
 
             if (product.unit === 'm²') {
                 // Determine which area to use:
@@ -95,17 +100,17 @@ class CalculationService {
                     // No glass: use gesamtflaeche
                     area = gesamtflaeche;
                 }
-                amount = product.price * area * quantity;
+                amount = product.price * area * effectiveQuantity;
             } else {
                 // For piece-based or linear meter products
-                amount = product.price * quantity;
+                amount = product.price * effectiveQuantity;
             }
 
             subtotal += amount;
 
             selectedProductsDetails.push({
                 ...product,
-                quantity,
+                quantity: effectiveQuantity,
                 amount
             });
         });
