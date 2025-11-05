@@ -208,6 +208,8 @@ class AppState {
      * Go to customer select view
      */
     goToCustomerSelect() {
+        // Reload customers from storage to ensure fresh data
+        this.loadFromStorage();
         this.view = VIEWS.CUSTOMER_SELECT;
         this.currentCustomer = null;
         this.currentGate = null;
