@@ -229,6 +229,9 @@ window.switchTab = function(tab) {
  * Update dimensions
  */
 window.updateDimensions = function() {
+    const activeElement = document.activeElement;
+    const activeElementId = activeElement ? activeElement.id : null;
+
     const breite = parseFloat(document.getElementById('breite').value) || 0;
     const hoehe = parseFloat(document.getElementById('hoehe').value) || 0;
     const glashoehe = parseFloat(document.getElementById('glashoehe').value) || 0;
@@ -260,6 +263,16 @@ window.updateDimensions = function() {
 
             // Re-render view to show new selection
             AppState.notify();
+
+            // Restore focus after re-render
+            if (activeElementId) {
+                setTimeout(() => {
+                    const element = document.getElementById(activeElementId);
+                    if (element) {
+                        element.focus();
+                    }
+                }, 0);
+            }
             return;
         }
     }
