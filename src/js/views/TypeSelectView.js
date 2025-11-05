@@ -46,6 +46,11 @@ export function renderTypeSelectView() {
                                         <div class="gate-type">${gate.gateType}</div>
                                     </div>
                                     <div class="gate-actions">
+                                        <button class="icon-btn copy"
+                                                onclick="window.copyGate('${gate.id}')"
+                                                title="Kopieren">
+                                            📋
+                                        </button>
                                         <button class="icon-btn edit"
                                                 onclick="window.editGate('${gate.id}')"
                                                 title="Bearbeiten">
@@ -72,8 +77,16 @@ export function renderTypeSelectView() {
                                         <span class="detail-value">${gate.gesamtflaeche.toFixed(2)} m²</span>
                                     </div>
                                     <div class="gate-detail">
+                                        <span class="detail-label">Aufschlag</span>
+                                        <span class="detail-value">${gate.aufschlag}% (${formatPrice(gate.aufschlagBetrag)})</span>
+                                    </div>
+                                    <div class="gate-detail">
+                                        <span class="detail-label">Preis (exkl. MwSt)</span>
+                                        <span class="detail-value">${formatPrice(gate.exklusiveMwst)}</span>
+                                    </div>
+                                    <div class="gate-detail">
                                         <span class="detail-label">Preis (inkl. MwSt)</span>
-                                        <span class="detail-value">${formatPrice(gate.inklMwst)}</span>
+                                        <span class="detail-value" style="font-weight: 700; color: var(--red-primary);">${formatPrice(gate.inklMwst)}</span>
                                     </div>
                                     ${gate.createdAt ? `
                                         <div class="gate-detail">
@@ -127,6 +140,29 @@ window.backToCustomers = function() {
  */
 window.selectGateType = function(gateType) {
     AppState.goToGateConfig(gateType);
+};
+
+/**
+ * Copy/duplicate existing gate
+ * @param {string} gateId
+ */
+window.copyGate = function(gateId) {
+    const customer = AppState.currentCustomer;
+    if (!customer) return;
+
+    const gate = customer.getGate(gateId);
+    if (!gate) return;
+
+    // Create a copy of the gate data without the ID
+    const gateCopy = { ...gate };
+    delete gateCopy.id; // Remove ID so a new one is generated
+    gateCopy.name = `${gate.name} (Kopie)`;
+    gateCopy.createdAt = new Date().toISOString();
+    gateCopy.updatedAt = new Date().toISOString();
+
+    // Set as current gate and go to config view
+    AppState.setCurrentGate(gateCopy);
+    AppState.goToGateConfig(gate.gateType);
 };
 
 /**
