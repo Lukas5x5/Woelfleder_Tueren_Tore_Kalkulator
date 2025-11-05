@@ -401,13 +401,20 @@ function generateProductNotes(gate) {
         const product = allProducts.find(p => p.id === selected.id);
         if (!product) return;
 
-        const productLine = `- ${product.name} x ${selected.quantity}`;
+        const quantity = selected.quantity || 1;
+        const sides = selected.sides || 'einseitig';
+
+        // Check if this is a general accessory and add sides info
+        const isGeneralAccessory = generalAccessories.some(p => p.id === product.id);
+        const sidesInfo = (isGeneralAccessory && sides === 'beidseitig') ? ' (beidseitig)' : '';
+
+        const productLine = `- ${product.name} x ${quantity}${sidesInfo}`;
 
         if (categoryData.main.some(p => p.id === product.id)) {
             mainProducts.push(productLine);
         } else if (categoryData.accessories.some(p => p.id === product.id)) {
             accessories.push(productLine);
-        } else if (generalAccessories.some(p => p.id === product.id)) {
+        } else if (isGeneralAccessory) {
             generalAcc.push(productLine);
         }
     });
