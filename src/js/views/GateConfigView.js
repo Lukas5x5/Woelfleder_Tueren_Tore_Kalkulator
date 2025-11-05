@@ -277,19 +277,23 @@ window.updateDimensions = function() {
             AppState.notify();
 
             // Restore focus, cursor position, and scroll position after re-render
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 if (activeElementId) {
                     const element = document.getElementById(activeElementId);
                     if (element) {
+                        // Focus element
                         element.focus();
 
-                        // Restore cursor position
-                        if (selectionStart !== null && selectionEnd !== null) {
-                            element.setSelectionRange(selectionStart, selectionEnd);
-                        }
-
-                        // Prevent scroll to input on mobile
-                        element.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+                        // Restore cursor position after focus
+                        requestAnimationFrame(() => {
+                            if (selectionStart !== null && selectionEnd !== null) {
+                                try {
+                                    element.setSelectionRange(selectionStart, selectionEnd);
+                                } catch (e) {
+                                    // Ignore errors on non-text inputs
+                                }
+                            }
+                        });
                     }
                 }
 
@@ -298,7 +302,7 @@ window.updateDimensions = function() {
                 if (newProductList && scrollTop) {
                     newProductList.scrollTop = scrollTop;
                 }
-            }, 0);
+            });
             return;
         }
     }
