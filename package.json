@@ -1,0 +1,17 @@
+{
+  "name": "woelfleder-kalkulator",
+  "version": "1.0.0",
+  "description": "Wölfleder Türen & Tore Kalkulator - Progressive Web App",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["PWA", "calculator", "doors", "gates"],
+  "author": "Wölfleder GmbH",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

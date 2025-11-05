@@ -1,0 +1,103 @@
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: 2.5rem;
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    background: var(--gray-light);
+    color: var(--gray-dark);
+    font-weight: 600;
+    font-size: var(--font-size-md);
+    transition: all var(--transition-fast);
+}
+
+.step.active {
+    background: var(--red-primary);
+    color: white;
+}
+
+.step-number {
+    width: 26px;
+    height: 26px;
+    background: rgba(255,255,255,0.3);
+    border-radius: var(--radius-round);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+/* Layout Grid */
+.layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--spacing-xl);
+}
+
+/* Highlight Animation */
+@keyframes highlight-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(200, 16, 46, 0);
+    }
+    25% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(200, 16, 46, 0.3);
+    }
+    50% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(200, 16, 46, 0);
+    }
+    75% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(200, 16, 46, 0.3);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        margin: var(--spacing-md) auto;
+        padding: 0 var(--spacing-md);
+    }
+
+    .progress-steps {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-md);
+    }
+
+    .step {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+}
