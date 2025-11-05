@@ -18,11 +18,14 @@
     font-weight: 700;
     color: var(--text-dark);
     margin-bottom: var(--spacing-xl);
-    padding-bottom: var(--spacing-lg);
-    border-bottom: 3px solid var(--red-primary);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--red-lightest), white);
+    border-left: 5px solid var(--red-primary);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+    box-shadow: var(--shadow-xs);
 }
 
 .card-title::before {
@@ -31,6 +34,7 @@
     height: 1.5rem;
     background: linear-gradient(to bottom, var(--red-primary), var(--red-light));
     border-radius: 2px;
+    display: none;
 }
 
 /* Customer Grid - Bessere Mobile-Anpassung */
