@@ -37,13 +37,23 @@ class CalculationService {
     }
 
     /**
+     * Check if product is "Minderpreis einwandige Füllung"
+     * @param {Object} product
+     * @returns {boolean}
+     */
+    isMinderpreisProduct(product) {
+        const nameLower = product.name.toLowerCase();
+        return nameLower.includes('minderpreis') && nameLower.includes('einwandige');
+    }
+
+    /**
      * Calculate total price for gate
      * @param {Object} gate
      * @param {Array} products - All available products
      * @returns {Object}
      */
     calculateTotal(gate, products) {
-        const { torflaeche, glasflaeche } = this.calculateAreas(
+        const { gesamtflaeche, torflaeche, glasflaeche } = this.calculateAreas(
             gate.breite,
             gate.hoehe,
             gate.glashoehe
@@ -61,8 +71,19 @@ class CalculationService {
             const quantity = selected.quantity || 1;
 
             if (product.unit === 'm²') {
-                // For area-based products, use appropriate area
-                const area = this.isGlassProduct(product) ? glasflaeche : torflaeche;
+                // Determine which area to use:
+                // - Glass products: use glasflaeche
+                // - Minderpreis einwandige Füllung: use torflaeche (without glass)
+                // - All other products (Hauptprodukte): use gesamtflaeche
+                let area;
+                if (this.isGlassProduct(product)) {
+                    area = glasflaeche;
+                } else if (this.isMinderpreisProduct(product)) {
+                    area = torflaeche;
+                } else {
+                    // Hauptprodukte und andere Produkte verwenden die gesamte Fläche
+                    area = gesamtflaeche;
+                }
                 amount = product.price * area * quantity;
             } else {
                 // For piece-based or linear meter products
