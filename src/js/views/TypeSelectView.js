@@ -34,8 +34,24 @@ export function renderTypeSelectView() {
                 </div>
             </div>
 
+            <div class="card-title">
+                Neues Tor erstellen
+            </div>
+
+            <div class="type-grid">
+                ${gateTypes.map((type, index) => {
+                    const iconKey = ['door', 'wingGate', 'pushGate', 'slidingDoor'][index];
+                    return `
+                        <div class="type-card" onclick="window.selectGateType('${type}')">
+                            ${ICONS[iconKey]}
+                            <div class="type-name">${type}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+
             ${customer.gates.length > 0 ? `
-                <div class="saved-gates-section">
+                <div class="saved-gates-section" style="margin-top: 2rem;">
                     <h3 class="section-title">Gespeicherte Tore</h3>
                     <div class="gate-list">
                         ${customer.gates.map(gate => `
@@ -105,22 +121,6 @@ export function renderTypeSelectView() {
                     </div>
                 </div>
             ` : ''}
-
-            <div class="card-title" style="margin-top: ${customer.gates.length > 0 ? '2rem' : '0'};">
-                Neues Tor erstellen
-            </div>
-
-            <div class="type-grid">
-                ${gateTypes.map((type, index) => {
-                    const iconKey = ['door', 'wingGate', 'pushGate', 'slidingDoor'][index];
-                    return `
-                        <div class="type-card" onclick="window.selectGateType('${type}')">
-                            ${ICONS[iconKey]}
-                            <div class="type-name">${type}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
         </div>
     `;
 }
