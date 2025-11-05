@@ -166,7 +166,8 @@ function renderProductTab(gate, activeTab, categoryData) {
 
                     return `
                         <div class="product-item ${isSelected ? 'selected' : ''}"
-                             id="product-${product.id}">
+                             id="product-${product.id}"
+                             onclick="window.toggleProduct(${product.id})">
                             <div class="product-name">${product.name}</div>
                             <div class="product-price">${formatPrice(product.price)}/${product.unit}</div>
                             ${isSelected ? `
@@ -175,13 +176,7 @@ function renderProductTab(gate, activeTab, categoryData) {
                                        min="1" step="1"
                                        onclick="event.stopPropagation()"
                                        oninput="window.updateQuantity(${product.id}, this.value)">
-                            ` : `
-                                <button class="btn btn-primary"
-                                        onclick="window.toggleProduct(${product.id})"
-                                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
-                                    Hinzufügen
-                                </button>
-                            `}
+                            ` : ''}
                         </div>
                     `;
                 }).join('')}

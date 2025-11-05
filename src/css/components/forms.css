@@ -84,45 +84,85 @@
 }
 
 .product-item {
-    background: var(--gray-bg);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    padding: 0.9rem;
+    background: white;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all var(--transition-normal);
     -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    min-height: 52px; /* Touch-Target */
+}
+
+.product-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--red-primary), var(--red-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-normal);
+}
+
+.product-item:hover::before,
+.product-item:active::before {
+    transform: scaleX(1);
 }
 
 .product-item:hover,
 .product-item:active {
-    background: white;
     border-color: var(--red-light);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+    background: linear-gradient(to bottom, white, var(--red-lightest));
 }
 
 .product-item.selected {
-    background: var(--red-primary);
+    background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
     color: white;
     border-color: var(--red-primary);
+    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+    transform: translateY(-2px);
+}
+
+.product-item.selected::before {
+    transform: scaleX(1);
+    background: linear-gradient(to right, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
 }
 
 .product-name {
-    font-weight: 500;
+    font-weight: 600;
     flex: 1;
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-md);
+    color: var(--text-dark);
+}
+
+.product-item.selected .product-name {
+    color: white;
 }
 
 .product-price {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--red-primary);
     margin: 0 var(--spacing-md);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-md);
+    padding: 0.3rem 0.7rem;
+    background: var(--red-lightest);
+    border-radius: var(--radius-sm);
 }
 
 .product-item.selected .product-price {
     color: white;
+    background: rgba(255,255,255,0.2);
 }
 
 .quantity-input {
