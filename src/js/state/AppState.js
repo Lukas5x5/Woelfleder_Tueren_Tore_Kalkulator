@@ -218,6 +218,13 @@ class AppState {
      * Go to type select view
      */
     goToTypeSelect() {
+        // Reload data from storage to ensure fresh gate list
+        this.loadFromStorage();
+        // Re-set current customer to get updated reference
+        if (this.currentCustomer) {
+            const customerId = this.currentCustomer.id;
+            this.currentCustomer = this.customers.find(c => c.id === customerId);
+        }
         this.view = VIEWS.TYPE_SELECT;
         this.currentGate = null;
         this.notify();
