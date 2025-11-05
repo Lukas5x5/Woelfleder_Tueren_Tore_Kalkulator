@@ -46,6 +46,26 @@ class CalculationService {
     }
 
     /**
+     * Check if product is "in ganzen Platten" (whole plates)
+     * @param {Object} product
+     * @returns {boolean}
+     */
+    isWholePlatesProduct(product) {
+        const nameLower = product.name.toLowerCase();
+        return nameLower.includes('in ganzen platten');
+    }
+
+    /**
+     * Check if product is "zugeschnitten" (cut to size)
+     * @param {Object} product
+     * @returns {boolean}
+     */
+    isCutToSizeProduct(product) {
+        const nameLower = product.name.toLowerCase();
+        return nameLower.includes('zugeschnitten');
+    }
+
+    /**
      * Calculate total price for gate
      * @param {Object} gate
      * @param {Array} products - All available products
@@ -76,31 +96,43 @@ class CalculationService {
             const effectiveQuantity = quantity * sidesMultiplier;
 
             if (product.unit === 'm²') {
-                // Determine which area to use:
-                // 1. Products with "Verglasung" in name: use glasflaeche
-                // 2. Hauptprodukte (main products): ALWAYS use gesamtflaeche
-                // 3. Minderpreis einwandige Füllung: use torflaeche (without glass)
-                // 4. All other m² products with glass: use torflaeche
-                let area;
-                const isMainProduct = mainProducts.some(p => p.id === product.id);
-
-                if (this.isGlassProduct(product)) {
-                    // Verglasung uses glasflaeche
-                    area = glasflaeche;
-                } else if (isMainProduct) {
-                    // Hauptprodukte ALWAYS use gesamtflaeche (full area)
-                    area = gesamtflaeche;
-                } else if (this.isMinderpreisProduct(product)) {
-                    // Minderpreis einwandige Füllung uses torflaeche
-                    area = torflaeche;
-                } else if (gate.glashoehe > 0) {
-                    // If glass height is set, use torflaeche (area without glass)
-                    area = torflaeche;
+                // Special handling for "ganze Platten" (whole plates) and "zugeschnitten" (cut to size)
+                if (this.isWholePlatesProduct(product)) {
+                    // Whole plates: quantity is number of plates, price is per m²
+                    // Calculation: price × quantity (no area multiplication)
+                    amount = product.price * effectiveQuantity;
+                } else if (this.isCutToSizeProduct(product)) {
+                    // Cut to size: quantity is m² area entered by user
+                    // Calculation: price × m² (effectiveQuantity is already the m²)
+                    amount = product.price * effectiveQuantity;
                 } else {
-                    // No glass: use gesamtflaeche
-                    area = gesamtflaeche;
+                    // Standard m² products: calculate based on gate area
+                    // Determine which area to use:
+                    // 1. Products with "Verglasung" in name: use glasflaeche
+                    // 2. Hauptprodukte (main products): ALWAYS use gesamtflaeche
+                    // 3. Minderpreis einwandige Füllung: use torflaeche (without glass)
+                    // 4. All other m² products with glass: use torflaeche
+                    let area;
+                    const isMainProduct = mainProducts.some(p => p.id === product.id);
+
+                    if (this.isGlassProduct(product)) {
+                        // Verglasung uses glasflaeche
+                        area = glasflaeche;
+                    } else if (isMainProduct) {
+                        // Hauptprodukte ALWAYS use gesamtflaeche (full area)
+                        area = gesamtflaeche;
+                    } else if (this.isMinderpreisProduct(product)) {
+                        // Minderpreis einwandige Füllung uses torflaeche
+                        area = torflaeche;
+                    } else if (gate.glashoehe > 0) {
+                        // If glass height is set, use torflaeche (area without glass)
+                        area = torflaeche;
+                    } else {
+                        // No glass: use gesamtflaeche
+                        area = gesamtflaeche;
+                    }
+                    amount = product.price * area * effectiveQuantity;
                 }
-                amount = product.price * area * effectiveQuantity;
             } else {
                 // For piece-based or linear meter products
                 amount = product.price * effectiveQuantity;

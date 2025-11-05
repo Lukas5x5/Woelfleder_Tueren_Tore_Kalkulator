@@ -166,6 +166,14 @@ function renderProductTab(gate, activeTab, categoryData) {
                     const sides = gate.getProductSides(product.id);
                     const isGeneralAccessory = activeTab === TABS.GENERAL;
 
+                    // Determine input step based on product type
+                    const nameLower = product.name.toLowerCase();
+                    const isCutToSize = nameLower.includes('zugeschnitten');
+                    const isWholePlates = nameLower.includes('in ganzen platten');
+                    const inputStep = (isCutToSize || isWholePlates) ? (isCutToSize ? '0.01' : '1') : '1';
+                    const inputMin = (isCutToSize || isWholePlates) ? '0.01' : '1';
+                    const inputLabel = (isCutToSize || isWholePlates) ? (isCutToSize ? 'm²' : 'Stk') : '';
+
                     return `
                         <div class="product-item ${isSelected ? 'selected' : ''}"
                              id="product-${product.id}"
@@ -176,7 +184,8 @@ function renderProductTab(gate, activeTab, categoryData) {
                                 <div class="product-controls" onclick="event.stopPropagation()">
                                     <input type="number" class="quantity-input"
                                            value="${quantity}"
-                                           min="1" step="1"
+                                           min="${inputMin}" step="${inputStep}"
+                                           placeholder="${inputLabel}"
                                            oninput="window.updateQuantity(${product.id}, this.value)">
                                     ${isGeneralAccessory ? `
                                         <select class="sides-select"
