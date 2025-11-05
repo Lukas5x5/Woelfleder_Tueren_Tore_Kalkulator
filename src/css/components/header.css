@@ -22,7 +22,18 @@
 .logo-container {
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
+}
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
@@ -33,9 +44,9 @@
 }
 
 .logo-subtitle {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     color: var(--gray-dark);
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .header-info {
@@ -89,12 +100,21 @@
         padding: 0 var(--spacing-md);
     }
 
+    .logo-container {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+
+    .logo-img {
+        height: 50px;
+    }
+
     .logo {
         font-size: 2rem;
     }
 
     .logo-subtitle {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-sm);
     }
 
     .header-info {
@@ -111,11 +131,15 @@
 }
 
 @media (max-width: 480px) {
+    .logo-img {
+        height: 40px;
+    }
+
     .logo {
         font-size: 1.5rem;
     }
 
     .logo-subtitle {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
     }
 }

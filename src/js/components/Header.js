@@ -7,8 +7,8 @@ export function renderHeader() {
         <div class="header">
             <div class="header-content">
                 <div class="logo-container">
-                    <div>
-                        <div class="logo">WÖLFLEDER</div>
+                    <img src="./logo.jpg" alt="Wölfleder Logo" class="logo-img">
+                    <div class="logo-text">
                         <div class="logo-subtitle">Türen & Tore Kalkulator</div>
                     </div>
                 </div>

@@ -232,6 +232,10 @@ window.updateDimensions = function() {
     const activeElement = document.activeElement;
     const activeElementId = activeElement ? activeElement.id : null;
 
+    // Save cursor position in input field
+    const selectionStart = activeElement && activeElement.selectionStart !== undefined ? activeElement.selectionStart : null;
+    const selectionEnd = activeElement && activeElement.selectionEnd !== undefined ? activeElement.selectionEnd : null;
+
     // Save scroll position and active tab
     const productList = document.querySelector('.product-list');
     const scrollTop = productList ? productList.scrollTop : 0;
@@ -272,12 +276,18 @@ window.updateDimensions = function() {
             // Re-render view to show new selection
             AppState.notify();
 
-            // Restore focus and scroll position after re-render
+            // Restore focus, cursor position, and scroll position after re-render
             setTimeout(() => {
                 if (activeElementId) {
                     const element = document.getElementById(activeElementId);
                     if (element) {
                         element.focus();
+
+                        // Restore cursor position
+                        if (selectionStart !== null && selectionEnd !== null) {
+                            element.setSelectionRange(selectionStart, selectionEnd);
+                        }
+
                         // Prevent scroll to input on mobile
                         element.scrollIntoView({ block: 'nearest', behavior: 'auto' });
                     }
