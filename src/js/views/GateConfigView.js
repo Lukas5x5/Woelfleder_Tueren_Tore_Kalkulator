@@ -225,22 +225,13 @@ window.switchTab = function(tab) {
     AppState.setActiveTab(tab);
 };
 
+// Debounce timer for auto product selection
+let autoProductSelectionTimer = null;
+
 /**
  * Update dimensions
  */
 window.updateDimensions = function() {
-    const activeElement = document.activeElement;
-    const activeElementId = activeElement ? activeElement.id : null;
-
-    // Save cursor position in input field
-    const selectionStart = activeElement && activeElement.selectionStart !== undefined ? activeElement.selectionStart : null;
-    const selectionEnd = activeElement && activeElement.selectionEnd !== undefined ? activeElement.selectionEnd : null;
-
-    // Save scroll position and active tab
-    const productList = document.querySelector('.product-list');
-    const scrollTop = productList ? productList.scrollTop : 0;
-    const currentTab = AppState.activeTab;
-
     const breite = parseFloat(document.getElementById('breite').value) || 0;
     const hoehe = parseFloat(document.getElementById('hoehe').value) || 0;
     const glashoehe = parseFloat(document.getElementById('glashoehe').value) || 0;
@@ -251,63 +242,46 @@ window.updateDimensions = function() {
     const oldArea = gate.gesamtflaeche;
     gate.updateDimensions(breite, hoehe, glashoehe);
 
-    // Auto-select main product if area changed significantly
-    if (Math.abs(gate.gesamtflaeche - oldArea) > 0.1) {
-        const categoryData = productsByCategory[gate.gateType];
-        const autoProductId = CalculationService.autoSelectMainProduct(
-            gate.gateType,
-            gate.gesamtflaeche,
-            categoryData.main
-        );
-
-        if (autoProductId && !gate.isProductSelected(autoProductId)) {
-            // Remove other main products
-            categoryData.main.forEach(p => {
-                if (gate.isProductSelected(p.id)) {
-                    gate.toggleProduct(p.id);
-                }
-            });
-            // Add new main product
-            gate.toggleProduct(autoProductId, 1);
-
-            // Ensure active tab stays the same
-            AppState.activeTab = currentTab;
-
-            // Re-render view to show new selection
-            AppState.notify();
-
-            // Restore focus, cursor position, and scroll position after re-render
-            requestAnimationFrame(() => {
-                if (activeElementId) {
-                    const element = document.getElementById(activeElementId);
-                    if (element) {
-                        // Focus element
-                        element.focus();
-
-                        // Restore cursor position after focus
-                        requestAnimationFrame(() => {
-                            if (selectionStart !== null && selectionEnd !== null) {
-                                try {
-                                    element.setSelectionRange(selectionStart, selectionEnd);
-                                } catch (e) {
-                                    // Ignore errors on non-text inputs
-                                }
-                            }
-                        });
-                    }
-                }
-
-                // Restore scroll position of product list
-                const newProductList = document.querySelector('.product-list');
-                if (newProductList && scrollTop) {
-                    newProductList.scrollTop = scrollTop;
-                }
-            });
-            return;
-        }
-    }
-
+    // Always update summary immediately for instant feedback
     updateSummaryOnly();
+
+    // Debounce auto product selection to avoid interrupting user input
+    if (Math.abs(gate.gesamtflaeche - oldArea) > 0.1) {
+        // Clear previous timer
+        if (autoProductSelectionTimer) {
+            clearTimeout(autoProductSelectionTimer);
+        }
+
+        // Wait 800ms after user stops typing before auto-selecting product
+        autoProductSelectionTimer = setTimeout(() => {
+            const categoryData = productsByCategory[gate.gateType];
+            const autoProductId = CalculationService.autoSelectMainProduct(
+                gate.gateType,
+                gate.gesamtflaeche,
+                categoryData.main
+            );
+
+            if (autoProductId && !gate.isProductSelected(autoProductId)) {
+                // Save current tab
+                const currentTab = AppState.activeTab;
+
+                // Remove other main products
+                categoryData.main.forEach(p => {
+                    if (gate.isProductSelected(p.id)) {
+                        gate.toggleProduct(p.id);
+                    }
+                });
+                // Add new main product
+                gate.toggleProduct(autoProductId, 1);
+
+                // Ensure active tab stays the same
+                AppState.activeTab = currentTab;
+
+                // Re-render view to show new selection
+                AppState.notify();
+            }
+        }, 800);
+    }
 };
 
 /**
