@@ -26,14 +26,13 @@ class CalculationService {
     }
 
     /**
-     * Check if product is glass-related
+     * Check if product is glass-related (uses glasflaeche)
      * @param {Object} product
      * @returns {boolean}
      */
     isGlassProduct(product) {
-        const glassKeywords = ['glas', 'verglasung', 'fenster', 'plexiglas', 'isolierglas'];
         const nameLower = product.name.toLowerCase();
-        return glassKeywords.some(keyword => nameLower.includes(keyword));
+        return nameLower.includes('verglasung');
     }
 
     /**
@@ -72,16 +71,22 @@ class CalculationService {
 
             if (product.unit === 'm²') {
                 // Determine which area to use:
-                // - Glass products: use glasflaeche
-                // - Minderpreis einwandige Füllung: use torflaeche (without glass)
-                // - All other products (Hauptprodukte): use gesamtflaeche
+                // 1. Products with "Verglasung" in name: use glasflaeche
+                // 2. Minderpreis einwandige Füllung: use torflaeche (without glass)
+                // 3. If glashoehe is set (> 0): use torflaeche for all other m² products
+                // 4. Otherwise (no glass): use gesamtflaeche for Hauptprodukte
                 let area;
                 if (this.isGlassProduct(product)) {
+                    // Verglasung uses glasflaeche
                     area = glasflaeche;
                 } else if (this.isMinderpreisProduct(product)) {
+                    // Minderpreis einwandige Füllung uses torflaeche
+                    area = torflaeche;
+                } else if (gate.glashoehe > 0) {
+                    // If glass height is set, use torflaeche (area without glass)
                     area = torflaeche;
                 } else {
-                    // Hauptprodukte und andere Produkte verwenden die gesamte Fläche
+                    // No glass: Hauptprodukte use full gesamtflaeche
                     area = gesamtflaeche;
                 }
                 amount = product.price * area * quantity;
