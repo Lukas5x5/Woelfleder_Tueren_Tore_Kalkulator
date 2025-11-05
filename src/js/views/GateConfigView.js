@@ -32,7 +32,7 @@ export function renderGateConfigView() {
 
     // Calculate current totals
     const allProducts = [...categoryData.main, ...categoryData.accessories, ...generalAccessories];
-    const calculations = CalculationService.calculateTotal(gate, allProducts);
+    const calculations = CalculationService.calculateTotal(gate, allProducts, categoryData.main);
 
     return `
         <div class="layout-grid">
@@ -194,7 +194,7 @@ function updateSummaryOnly() {
 
     const categoryData = productsByCategory[gate.gateType];
     const allProducts = [...categoryData.main, ...categoryData.accessories, ...generalAccessories];
-    const calculations = CalculationService.calculateTotal(gate, allProducts);
+    const calculations = CalculationService.calculateTotal(gate, allProducts, categoryData.main);
 
     const summaryContainer = document.getElementById('summary-container');
     if (summaryContainer) {

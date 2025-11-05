@@ -49,9 +49,10 @@ class CalculationService {
      * Calculate total price for gate
      * @param {Object} gate
      * @param {Array} products - All available products
+     * @param {Array} mainProducts - Main products for this gate type (optional)
      * @returns {Object}
      */
-    calculateTotal(gate, products) {
+    calculateTotal(gate, products, mainProducts = []) {
         const { gesamtflaeche, torflaeche, glasflaeche } = this.calculateAreas(
             gate.breite,
             gate.hoehe,
@@ -72,13 +73,18 @@ class CalculationService {
             if (product.unit === 'm²') {
                 // Determine which area to use:
                 // 1. Products with "Verglasung" in name: use glasflaeche
-                // 2. Minderpreis einwandige Füllung: use torflaeche (without glass)
-                // 3. If glashoehe is set (> 0): use torflaeche for all other m² products
-                // 4. Otherwise (no glass): use gesamtflaeche for Hauptprodukte
+                // 2. Hauptprodukte (main products): ALWAYS use gesamtflaeche
+                // 3. Minderpreis einwandige Füllung: use torflaeche (without glass)
+                // 4. All other m² products with glass: use torflaeche
                 let area;
+                const isMainProduct = mainProducts.some(p => p.id === product.id);
+
                 if (this.isGlassProduct(product)) {
                     // Verglasung uses glasflaeche
                     area = glasflaeche;
+                } else if (isMainProduct) {
+                    // Hauptprodukte ALWAYS use gesamtflaeche (full area)
+                    area = gesamtflaeche;
                 } else if (this.isMinderpreisProduct(product)) {
                     // Minderpreis einwandige Füllung uses torflaeche
                     area = torflaeche;
@@ -86,7 +92,7 @@ class CalculationService {
                     // If glass height is set, use torflaeche (area without glass)
                     area = torflaeche;
                 } else {
-                    // No glass: Hauptprodukte use full gesamtflaeche
+                    // No glass: use gesamtflaeche
                     area = gesamtflaeche;
                 }
                 amount = product.price * area * quantity;
