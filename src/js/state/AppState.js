@@ -211,6 +211,8 @@ class AppState {
         this.view = VIEWS.CUSTOMER_SELECT;
         this.currentCustomer = null;
         this.currentGate = null;
+        // Reload customers from storage to ensure fresh data
+        this.loadFromStorage();
         this.notify();
     }
 
