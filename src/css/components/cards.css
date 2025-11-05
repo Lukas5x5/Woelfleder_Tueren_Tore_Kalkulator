@@ -81,14 +81,22 @@
     transform: translateY(-4px);
 }
 
+.customer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
 .customer-name {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--text-dark);
-    margin-bottom: var(--spacing-sm);
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    flex: 1;
 }
 
 .customer-name::before {

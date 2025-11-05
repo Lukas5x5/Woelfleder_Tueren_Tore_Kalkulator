@@ -360,12 +360,62 @@ window.saveGate = function() {
 };
 
 /**
+ * Generate product notes from selected products
+ * @param {Gate} gate
+ * @returns {string}
+ */
+function generateProductNotes(gate) {
+    const categoryData = productsByCategory[gate.gateType];
+    const allProducts = [...categoryData.main, ...categoryData.accessories, ...generalAccessories];
+
+    // Organize selected products by category
+    const mainProducts = [];
+    const accessories = [];
+    const generalAcc = [];
+
+    gate.selectedProducts.forEach(selected => {
+        const product = allProducts.find(p => p.id === selected.id);
+        if (!product) return;
+
+        const productLine = `- ${product.name} x ${selected.quantity}`;
+
+        if (categoryData.main.some(p => p.id === product.id)) {
+            mainProducts.push(productLine);
+        } else if (categoryData.accessories.some(p => p.id === product.id)) {
+            accessories.push(productLine);
+        } else if (generalAccessories.some(p => p.id === product.id)) {
+            generalAcc.push(productLine);
+        }
+    });
+
+    // Build notes text
+    let notes = '';
+
+    if (mainProducts.length > 0) {
+        notes += 'Hauptprodukte:\n' + mainProducts.join('\n') + '\n\n';
+    }
+
+    if (accessories.length > 0) {
+        notes += 'Zubehör:\n' + accessories.join('\n') + '\n\n';
+    }
+
+    if (generalAcc.length > 0) {
+        notes += 'Allg. Zubehör:\n' + generalAcc.join('\n') + '\n\n';
+    }
+
+    return notes.trim();
+}
+
+/**
  * Open save gate modal
  */
 function openSaveGateModal() {
     const gate = AppState.currentGate;
     const modalBody = document.getElementById('gateModalBody');
     const modalTitle = document.querySelector('#gateModal .modal-title');
+
+    // Generate product notes if not already set
+    const productNotes = gate.notizen || generateProductNotes(gate);
 
     modalTitle.textContent = 'Tor speichern';
     modalBody.innerHTML = `
@@ -379,8 +429,8 @@ function openSaveGateModal() {
 
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label for="gateNotizen">Notizen</label>
-                <textarea id="gateNotizen" name="notizen" rows="4"
-                          placeholder="Zusätzliche Informationen...">${gate.notizen || ''}</textarea>
+                <textarea id="gateNotizen" name="notizen" rows="8"
+                          placeholder="Zusätzliche Informationen...">${productNotes}</textarea>
             </div>
 
             <div class="btn-group">

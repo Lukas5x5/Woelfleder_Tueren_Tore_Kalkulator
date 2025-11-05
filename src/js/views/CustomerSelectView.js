@@ -35,7 +35,14 @@ export function renderCustomerSelectView() {
                 <div class="customer-grid">
                     ${customers.map(customer => `
                         <div class="customer-card" onclick="window.selectCustomer('${customer.id}')">
-                            <div class="customer-name">${customer.name}</div>
+                            <div class="customer-header">
+                                <div class="customer-name">${customer.name}</div>
+                                <button class="icon-btn delete"
+                                        onclick="event.stopPropagation(); window.deleteCustomerFromCard('${customer.id}')"
+                                        title="Löschen">
+                                    🗑️
+                                </button>
+                            </div>
                             <div class="customer-info">
                                 ${customer.company ? `<div>${customer.company}</div>` : ''}
                                 ${customer.address ? `<div>${customer.address}</div>` : ''}
@@ -207,12 +214,30 @@ window.selectCustomer = function(customerId) {
 };
 
 /**
- * Delete customer
+ * Delete customer (from modal)
  * @param {string} customerId
  */
 window.deleteCustomer = function(customerId) {
     if (confirm('Möchten Sie diesen Kunden wirklich löschen?')) {
         AppState.deleteCustomer(customerId);
         closeModal('customerModal');
+    }
+};
+
+/**
+ * Delete customer (from card)
+ * @param {string} customerId
+ */
+window.deleteCustomerFromCard = function(customerId) {
+    const customer = AppState.getCustomer(customerId);
+    if (!customer) return;
+
+    const gateCount = customer.gates.length;
+    const confirmMessage = gateCount > 0
+        ? `Möchten Sie den Kunden "${customer.name}" wirklich löschen?\n\nEs ${gateCount === 1 ? 'ist 1 Tor' : `sind ${gateCount} Tore`} gespeichert, ${gateCount === 1 ? 'das' : 'die'} ebenfalls gelöscht ${gateCount === 1 ? 'wird' : 'werden'}.`
+        : `Möchten Sie den Kunden "${customer.name}" wirklich löschen?`;
+
+    if (confirm(confirmMessage)) {
+        AppState.deleteCustomer(customerId);
     }
 };
