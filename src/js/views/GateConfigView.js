@@ -232,6 +232,11 @@ window.updateDimensions = function() {
     const activeElement = document.activeElement;
     const activeElementId = activeElement ? activeElement.id : null;
 
+    // Save scroll position and active tab
+    const productList = document.querySelector('.product-list');
+    const scrollTop = productList ? productList.scrollTop : 0;
+    const currentTab = AppState.activeTab;
+
     const breite = parseFloat(document.getElementById('breite').value) || 0;
     const hoehe = parseFloat(document.getElementById('hoehe').value) || 0;
     const glashoehe = parseFloat(document.getElementById('glashoehe').value) || 0;
@@ -261,18 +266,29 @@ window.updateDimensions = function() {
             // Add new main product
             gate.toggleProduct(autoProductId, 1);
 
+            // Ensure active tab stays the same
+            AppState.activeTab = currentTab;
+
             // Re-render view to show new selection
             AppState.notify();
 
-            // Restore focus after re-render
-            if (activeElementId) {
-                setTimeout(() => {
+            // Restore focus and scroll position after re-render
+            setTimeout(() => {
+                if (activeElementId) {
                     const element = document.getElementById(activeElementId);
                     if (element) {
                         element.focus();
+                        // Prevent scroll to input on mobile
+                        element.scrollIntoView({ block: 'nearest', behavior: 'auto' });
                     }
-                }, 0);
-            }
+                }
+
+                // Restore scroll position of product list
+                const newProductList = document.querySelector('.product-list');
+                if (newProductList && scrollTop) {
+                    newProductList.scrollTop = scrollTop;
+                }
+            }, 0);
             return;
         }
     }
